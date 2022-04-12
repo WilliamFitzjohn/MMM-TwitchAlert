@@ -5,7 +5,7 @@ Module.register("MMM-TwitchAlert",{
 	},
 
 	// Get api token using the client info
-	getToken: function(){
+	getNewToken: function(){
 		var xmlhttp = new XMLHttpRequest();
 		// Callback when it gets the api token
 		xmlhttp.onreadystatechange = function() {
@@ -31,15 +31,31 @@ Module.register("MMM-TwitchAlert",{
 	updateStreamsData: function(){
 
 	},
-
+	
+	notificationReceived: function(notification, payload, sender) {
+		if(notification === "RETREIVE_API_TOKEN_RES"){
+			if(payload === 'DNE' || payload === 'FAILURE'){
+				// make request to twitch api to get new token
+				// this.config.apiToken = payload;
+			}else{
+				this.config.apiToken = payload;
+			}
+		}else if(notification === "STORE_API_TOKEN_RES"){
+			//respond if good
+		}
+	},
+	
+	// Starting module
 	start: function(){
 		Log.info('Starting module: '+this.name);
+		this.sendSocketNotification("RETREIVE_API_TOKEN",null);
+		
 	},
 
 	// Displaying the object to the mirror
 	getDom: function(){
 		if(this.config.apiToken == ""){
-			this.getToken();
+			this.getNewToken();
 			this.config.apiToken = " ";
 		}
 		console.log(this);
