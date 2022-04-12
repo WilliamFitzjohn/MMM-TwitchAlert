@@ -8,7 +8,7 @@ module.exports = NodeHelper.create({
 
     // Talking to frontend js
     socketNotificationReceived(notification, payload) {
-		console.log(this.name + ' received a socket notification: ' + notification + ' - Payload: ' + payload);
+        // console.log(notification,payload)
         let path = process.cwd()+'/modules/MMM-TwitchAlert/API.txt';
 		// Checking message type
 		if (notification === 'STORE_API_TOKEN') {
@@ -29,7 +29,7 @@ module.exports = NodeHelper.create({
             }else{
                 // Storing the API key in an unsafe way (I'll change this ~eventually~)
                 try{
-                    res = fs.readFileSync(process.cwd()+'/modules/MMM-TwitchAlert/API.txt');
+                    res = fs.readFileSync(path,{encoding:'utf8', flag:'r'});
                 }catch(e){
                     console.log(this.name + ': Error reading file')
                 }
