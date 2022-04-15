@@ -1,0 +1,28 @@
+.mmm-twitchalert-container{
+    list-style-type: none;
+    padding-left: 0;
+    margin: auto;
+}
+
+.mmm-twitchalert-li {
+    height: 5rem;
+    display: flex;
+}
+
+.mmm-twitchalert-li img{
+    height: 100%;
+}
+
+.mmm-twitchalert-li h3{
+    margin: 0;
+    margin-left: 0.5rem;
+}
+
+.mmm-twitchalert-li p{
+    margin: 0;
+    margin-left: 0.5rem;
+}
+
+.mmm-twitchalert-grayscale {
+    filter: grayscale();
+}

@@ -2,6 +2,7 @@ Module.register('MMM-TwitchAlert',{
 	// Setting module config
 	defaults: {
 		streamerData: [],
+		loading: true,
 	},
 
 	// Get api token using the client info
@@ -59,11 +60,10 @@ Module.register('MMM-TwitchAlert',{
 	// Update the streamer
 	updateStreamersData: function(module){
 		// Get data for all streams
-		console.log
 		for(s in module.config.streamers){
 			module.getStreamerData(module.config.streamers[s]);
 		}
-		setTimeout(()=>{console.log(module.config.streamerData)},5000);
+		setTimeout(()=>{loading = false, module.updateDom()},3000);
 	},
 
 	// Make an api call to get data about a streamer
@@ -83,7 +83,7 @@ Module.register('MMM-TwitchAlert',{
 	},
 	
 	// Process messages from backend
-	socketNotificationReceived: function(notification, payload, sender) {
+	socketNotificationReceived: function(notification, payload, sender){
 		// Log.info(notification,payload);
 		if(notification === 'RETREIVE_API_TOKEN_RES'){
 			if(payload === 'DNE' || payload === 'FAILURE'){
@@ -97,19 +97,62 @@ Module.register('MMM-TwitchAlert',{
 			//respond if good
 		}
 	},
+
+	getStyles: function(){
+		return ["MMM-TwitchAlert.css"];
+	},
 	
 	// Starting module
 	start: function(){
 		Log.info('Starting module: '+this.name);
+		// if(!'live_only' in this.config){this.config.live_only = true}
+		// console.log('live_only' in this.config, this.config);
 		this.sendSocketNotification('RETREIVE_API_TOKEN',null);
 	},
 
 	// Displaying the object to the mirror
 	getDom: function(){
-		console.log(this);
+		var container = document.createElement('div');
+		container.className = "mmm-twitchalert-container";
 
-		var wrapper = document.createElement('div');
-		wrapper.innerHTML = this.config.apiToken;
-		return wrapper;
+		// if still loading data
+		if(this.loading){
+			container.innerHTML = 'Loading...';
+			return container;
+		}
+
+		// Create html objects for streamers
+		for(i in this.config.streamerData){
+			const streamer = this.config.streamerData[i];
+			
+			if(!this.config.live_only || streamer.is_live){
+				// Streamer object
+				let li = document.createElement('li');
+				li.className = "mmm-twitchalert-li";
+				container.appendChild(li);
+				
+				// Add image
+				let img = document.createElement('img');
+				img.src = streamer.thumbnail_url;
+				if(!streamer.is_live){img.className='mmm-twitchalert-grayscale'}
+				li.appendChild(img);
+	
+				// Add text div
+				let txtDiv = document.createElement('div');
+				li.appendChild(txtDiv);
+	
+				// Add header
+				let title = document.createElement('h3');
+				title.innerHTML = streamer.display_name;
+				txtDiv.appendChild(title);
+	
+				// Add game
+				let game = document.createElement('p');
+				game.innerHTML = 'Playing ' + streamer.game_name;
+				txtDiv.appendChild(game);
+			}
+		}
+
+		return container;
 	},
 });

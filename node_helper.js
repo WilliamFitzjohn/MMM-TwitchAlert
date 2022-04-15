@@ -12,7 +12,7 @@ module.exports = NodeHelper.create({
         let path = process.cwd()+'/modules/MMM-TwitchAlert/API.txt';
 		// Checking message type
 		if (notification === 'STORE_API_TOKEN') {
-            console.log('Storing token: ', payload);
+            // console.log('Storing token: ', payload); 
             // Storing the API key in an unsafe way (I'll change this ~eventually~)
             let res = fs.writeFileSync(path, payload, err => {
                 if (err) {
@@ -35,7 +35,7 @@ module.exports = NodeHelper.create({
                     console.log(this.name + ': Error reading file')
                 }
             }
-            console.log('Accessing token: ', res);
+            // console.log('Accessing token: ', res);
             this.sendSocketNotification("RETREIVE_API_TOKEN_RES", res);
 		}
 	},
