@@ -47,9 +47,5 @@ Argument | Type | Description | Required | Default Value
 -|-|-|-|-
 client_id | string | Client ID of your application in the Twitch API | Yes | N/A
 client_secret | string | Client Secret of your application in the Twitch API | Yes | N/A
-<<<<<<< HEAD
 live_only | boolean | Only show live streamers on your mirror | No | true
 streamers | string[] | List of streamers you wish to track | Yes | N/A
-=======
-streamers | string[] | List of streamers you wish to track | Yes | N/A
->>>>>>> 95807f4ce8d5ba02f89bfee941d130f7504edc07
