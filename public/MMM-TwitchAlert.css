@@ -1,0 +1,57 @@
+.mmm-twitchalert-container{
+    list-style-type: none;
+    padding-left: 0;
+    margin: auto;
+}
+
+.mmm-twitchalert-li {
+    margin-top: 0.3rem;
+    height: 4rem;
+    display: flex;
+}
+
+.mmm-twitchalert-imgdiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.mmm-twitchalert-imgdiv img{
+    height: 100%;
+    border-radius: 100%;
+}
+
+.mmm-twitchalert-live {
+    top: -27px;
+    text-align: center;
+    color: white;
+    background-color: red;
+    border-radius: 7px;
+    padding: 0px 5px;
+    font-weight: 500;
+    position: relative;
+    margin: 0;
+    width: auto;
+    border: black 4px solid;
+    line-height: 1;
+}
+
+.mmm-twitchalert-txtdiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 0.5rem;
+}
+.mmm-twitchalert-txtdiv h3{
+    margin: 0;
+}
+.mmm-twitchalert-txtdiv p{
+    margin: 0;
+}
+.mmm-twitchalert-right-align{
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.mmm-twitchalert-grayscale {
+    filter: grayscale();
+}

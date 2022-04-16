@@ -1,8 +1,8 @@
 # MMM-TwitchAlert
 ![Node Badge](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white) ![Node Badge](https://img.shields.io/badge/Twitch-9146FF?style=for-the-badge&logo=twitch&logoColor=white)
 
-### Screenshot
-Will be provided once development is complete
+### Screenshot Example
+<img src="public/imgs/readme_example_1.png" alt="Example of the module" width="300"/>
 
 ### Prerequisites
 This modules uses the free Twitch API. You will need to do some additional steps before the module runs.\
@@ -27,14 +27,16 @@ Don't worry, this is easy and well documented if you have troubles!
 
 ### Config
 Add this to your MagicMirror config file
-```json
+```javascript
 {
     module: "MMM-TwitchAlert",
     position: "bottom_left",
     config: {
         client_id: "INSERT_CLIENT_ID_HERE",
         client_secret: "INSERT_CLIENT_SECRET_HERE",
-		// live_only: false,
+        // live_only: false,
+        // show_live_badge: false,
+        // update_interval: 3, //minutes
         streamers: [
             "papashlomo",
         ],
@@ -47,5 +49,8 @@ Argument | Type | Description | Required | Default Value
 -|-|-|-|-
 client_id | string | Client ID of your application in the Twitch API | Yes | N/A
 client_secret | string | Client Secret of your application in the Twitch API | Yes | N/A
-live_only | boolean | Only show live streamers on your mirror | No | true
 streamers | string[] | List of streamers you wish to track | Yes | N/A
+live_only | boolean | Only show live streamers on your mirror | No | true
+show_live_badge | boolean | Show the "live" badge | No | true
+update_interval | integer | How many minutes between updating data (min = 1) | No | 5
+alignment | string | 'left' or 'right' align the module | No | 'left'

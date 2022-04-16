@@ -7,7 +7,7 @@ Module.register('MMM-TwitchAlert',{
 
 	// Get api token using the client info
 	getNewToken: function(callback){
-		console.log('Requesting new token from Twitch');
+		console.log('MMM-TwitchAlert: Requesting new token from Twitch');
 		var xmlhttp = new XMLHttpRequest();
 		let module = this;
 		// Callback when it gets the api token
@@ -35,7 +35,7 @@ Module.register('MMM-TwitchAlert',{
 	},
 
 	// Checks if a token is valid
-	validateToken: function(token){
+	validateOldToken: function(token){
 		var xmlhttp = new XMLHttpRequest();
 		let module = this;
 		// Callback when it gets the api token
@@ -43,12 +43,29 @@ Module.register('MMM-TwitchAlert',{
 			if(xmlhttp.readyState === 4){
 				if(xmlhttp.status == 200){// Authorized
 					//good
-					console.log('Token Authorized');
+					// console.log('Token Authorized');
 					module.updateStreamersData(module);
 					// module.updateDom();
 				}else if(xmlhttp.status == 401){// Unauthorized
-					console.log('Token Unauthorized')
+					// console.log('Token Unauthorized')
 					module.getNewToken(module.updateStreamersData);
+				}
+			}
+		}
+		xmlhttp.open('GET', 'https://id.twitch.tv/oauth2/validate');
+		xmlhttp.setRequestHeader('Authorization', 'OAuth ' + token);
+		xmlhttp.send();
+	},
+
+	// Checks if a token is valid
+	validateToken: function(token){
+		var xmlhttp = new XMLHttpRequest();
+		let module = this;
+		// Callback when it gets the api token
+		xmlhttp.onreadystatechange = function(){
+			if(xmlhttp.readyState === 4){
+				if(xmlhttp.status == 401){// Unauthorized
+					module.getNewToken(null);
 				}
 			}
 		}
@@ -60,10 +77,11 @@ Module.register('MMM-TwitchAlert',{
 	// Update the streamer
 	updateStreamersData: function(module){
 		// Get data for all streams
+		module.config.streamerData = [];
 		for(s in module.config.streamers){
 			module.getStreamerData(module.config.streamers[s]);
 		}
-		setTimeout(()=>{loading = false, module.updateDom()},3000);
+		setTimeout(()=>{module.config.loading = false, module.updateDom()},2500);
 	},
 
 	// Make an api call to get data about a streamer
@@ -73,6 +91,9 @@ Module.register('MMM-TwitchAlert',{
 		let module = this;
 		xmlhttp.onreadystatechange = function(){
 			if(xmlhttp.readyState === 4){
+				if(xmlhttp.status == 401){// unauthorized
+
+				}
 				module.config.streamerData.push(JSON.parse(xmlhttp.response).data[0]);
 			}
 		}
@@ -91,7 +112,7 @@ Module.register('MMM-TwitchAlert',{
 				this.getNewToken(null);
 			}else{
 				this.config.apiToken = payload;
-				this.validateToken(this.config.apiToken);
+				this.validateOldToken(this.config.apiToken);
 			}
 		}else if(notification === 'STORE_API_TOKEN_RES'){
 			//respond if good
@@ -99,15 +120,49 @@ Module.register('MMM-TwitchAlert',{
 	},
 
 	getStyles: function(){
-		return ["MMM-TwitchAlert.css"];
+		return ["modules/MMM-TwitchAlert/public/MMM-TwitchAlert.css"];
 	},
 	
 	// Starting module
 	start: function(){
 		Log.info('Starting module: '+this.name);
-		// if(!'live_only' in this.config){this.config.live_only = true}
-		// console.log('live_only' in this.config, this.config);
+
+		// Setting default / extreme values
+		if(!('live_only' in this.config)){
+			this.config.live_only = true;
+		}
+		if(!('show_live_badge' in this.config)){
+			this.config.show_live_badge = true;
+		}
+
+		if(!('update_interval' in this.config)){
+			this.config.update_interval = 5;
+		}else{
+			if(parseInt(this.config.update_interval) == null){
+				this.config.update_interval = 5;
+			}else if(parseInt(this.config.update_interval) < 1){
+				this.config.update_interval = 1;
+			}
+		}
+		if(!('alignment' in this.config)){
+			this.config.alignment = 'left';
+		}else{
+			if(this.config.alignment.toLowerCase() != 'left' && this.config.alignment.toLowerCase() != 'right'){
+				this.config.alignment = 'left';
+			}else{
+				this.config.alignment = this.config.alignment.toLowerCase();
+			}
+		}
+		
+		// Getting API token from backend
 		this.sendSocketNotification('RETREIVE_API_TOKEN',null);
+
+		// Setting Update Interval
+		let module = this;
+		setInterval(()=>{
+			module.validateToken(module.config.apiToken);
+			setTimeout(()=>{module.updateStreamersData(module);},2000);
+		},module.config.update_interval*60000);
 	},
 
 	// Displaying the object to the mirror
@@ -116,29 +171,50 @@ Module.register('MMM-TwitchAlert',{
 		container.className = "mmm-twitchalert-container";
 
 		// if still loading data
-		if(this.loading){
+		if(this.config.loading){
 			container.innerHTML = 'Loading...';
 			return container;
 		}
 
 		// Create html objects for streamers
-		for(i in this.config.streamerData){
+		for(n in this.config.streamerData){
+			// Finding correct streamer
+			let i = 0;
+			for(search_i in this.config.streamerData){
+				if(this.config.streamers[n].toLowerCase() === this.config.streamerData[search_i].broadcaster_login){
+					i = search_i;
+				}
+			}
 			const streamer = this.config.streamerData[i];
 			
 			if(!this.config.live_only || streamer.is_live){
 				// Streamer object
 				let li = document.createElement('li');
-				li.className = "mmm-twitchalert-li";
+				li.className = 'mmm-twitchalert-li' + (this.config.alignment === 'right' ? ' mmm-twitchalert-right-align' : '');
 				container.appendChild(li);
+				
+				// Add img div
+				let imgDiv = document.createElement('div');
+				imgDiv.className = 'mmm-twitchalert-imgdiv';
+				li.appendChild(imgDiv);
 				
 				// Add image
 				let img = document.createElement('img');
 				img.src = streamer.thumbnail_url;
 				if(!streamer.is_live){img.className='mmm-twitchalert-grayscale'}
-				li.appendChild(img);
+				imgDiv.appendChild(img);
+
+				// Add live badge
+				if(streamer.is_live && this.config.show_live_badge){
+					let live = document.createElement('h3');
+					live.innerHTML = 'LIVE';
+					live.className = 'mmm-twitchalert-live';
+					imgDiv.appendChild(live);
+				}
 	
 				// Add text div
 				let txtDiv = document.createElement('div');
+				txtDiv.className = 'mmm-twitchalert-txtdiv';
 				li.appendChild(txtDiv);
 	
 				// Add header
@@ -148,7 +224,11 @@ Module.register('MMM-TwitchAlert',{
 	
 				// Add game
 				let game = document.createElement('p');
-				game.innerHTML = 'Playing ' + streamer.game_name;
+				if(streamer.is_live){
+					game.innerHTML = 'Playing ' + streamer.game_name;
+				}else{
+					game.innerHTML = 'OFFLINE';
+				}
 				txtDiv.appendChild(game);
 			}
 		}
