@@ -97,7 +97,7 @@ Module.register('MMM-TwitchAlert',{
 				module.config.streamerData.push(JSON.parse(xmlhttp.response).data[0]);
 			}
 		}
-		xmlhttp.open('GET', 'https://api.twitch.tv/helix/search/channels?query='+streamer+'&first=1');
+		xmlhttp.open('GET', 'https://api.twitch.tv/helix/search/channels?query='+streamer.toLowerCase()+'&first=1');
 		xmlhttp.setRequestHeader('Authorization', 'Bearer ' + this.config.apiToken);
 		xmlhttp.setRequestHeader('Client-Id', this.config.client_id);
 		xmlhttp.send();

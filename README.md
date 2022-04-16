@@ -1,7 +1,8 @@
 # MMM-TwitchAlert
 ![Node Badge](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white) ![Node Badge](https://img.shields.io/badge/Twitch-9146FF?style=for-the-badge&logo=twitch&logoColor=white)
+Keep updated on your favourite streamers with this neat module. You can see when streamers are live and what game they are playing at a glance.
 
-### Screenshot Example
+### Example
 <img src="public/imgs/readme_example_1.png" alt="Example of the module" width="300"/>
 
 ### Prerequisites
@@ -11,8 +12,6 @@ Don't worry, this is easy and well documented if you have troubles!
 ### Installation
 1. `cd modules` from your MagicMirror folder
 2. `git clone https://github.com/WilliamFitzjohn/MMM-TwitchAlert.git`
-3. `cd MMM-TwitchAlert`
-4. `npm i` to install the module
 
 ### API Key
 1. Navigate to https://dev.twitch.tv/login and login using your twitch account.
@@ -37,8 +36,11 @@ Add this to your MagicMirror config file
         // live_only: false,
         // show_live_badge: false,
         // update_interval: 3, //minutes
+        // alignment: 'right'
         streamers: [
             "papashlomo",
+            "xqcow",
+            "ludwig",
         ],
     },
 },
