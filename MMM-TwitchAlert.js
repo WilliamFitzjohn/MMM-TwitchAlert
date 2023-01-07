@@ -199,17 +199,17 @@ Module.register('MMM-TwitchAlert',{
 				
 				// Add image div for case a: streamer is live and we need live badge AND / OR need streamer image
 				if((streamer.is_live && this.config.show_live_badge) || (streamer.is_live && this.config.show_streamer_image)) {
-				let imgDiv = document.createElement('div');
-				imgDiv.className = 'mmm-twitchalert-imgdiv';
-				li.appendChild(imgDiv);
+					var imgDiv = document.createElement('div');
+					imgDiv.className = 'mmm-twitchalert-imgdiv';
+					li.appendChild(imgDiv);
 				}
 
 				// Add image
 				if(streamer.is_live && this.config.show_streamer_image){
-				let img = document.createElement('img');
-				img.src = streamer.thumbnail_url;
-				if(!streamer.is_live && this.config.show_streamer_image){img.className='mmm-twitchalert-grayscale'}
-				imgDiv.appendChild(img);
+					let img = document.createElement('img');
+					img.src = streamer.thumbnail_url;
+					if(!streamer.is_live && this.config.show_streamer_image){img.className='mmm-twitchalert-grayscale'}
+					imgDiv.appendChild(img);
 				}
 
 				// Add live badge
