@@ -54,5 +54,6 @@ client_secret | string | Client Secret of your application in the Twitch API | Y
 streamers | string[] | List of streamers you wish to track | Yes | N/A
 live_only | boolean | Only show live streamers on your mirror | No | true
 show_live_badge | boolean | Show the "live" badge | No | true
+show_streamer_image | boolean | Show the Image of the streamer | No | true
 update_interval | integer | How many minutes between updating data (min = 1) | No | 5
 alignment | string | 'left' or 'right' align the module | No | 'left'
