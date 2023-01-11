@@ -135,6 +135,10 @@ Module.register('MMM-TwitchAlert',{
 			this.config.show_live_badge = true;
 		}
 
+		if(!('show_streamer_image' in this.config)){
+			this.config.show_streamer_image = true;
+		}
+
 		if(!('update_interval' in this.config)){
 			this.config.update_interval = 5;
 		}else{
@@ -193,16 +197,20 @@ Module.register('MMM-TwitchAlert',{
 				li.className = 'mmm-twitchalert-li' + (this.config.alignment === 'right' ? ' mmm-twitchalert-right-align' : '');
 				container.appendChild(li);
 				
-				// Add img div
-				let imgDiv = document.createElement('div');
-				imgDiv.className = 'mmm-twitchalert-imgdiv';
-				li.appendChild(imgDiv);
-				
+				// Add image div for case a: streamer is live and we need live badge AND / OR need streamer image
+				if((streamer.is_live && this.config.show_live_badge) || (streamer.is_live && this.config.show_streamer_image)) {
+					var imgDiv = document.createElement('div');
+					imgDiv.className = 'mmm-twitchalert-imgdiv';
+					li.appendChild(imgDiv);
+				}
+
 				// Add image
-				let img = document.createElement('img');
-				img.src = streamer.thumbnail_url;
-				if(!streamer.is_live){img.className='mmm-twitchalert-grayscale'}
-				imgDiv.appendChild(img);
+				if(streamer.is_live && this.config.show_streamer_image){
+					let img = document.createElement('img');
+					img.src = streamer.thumbnail_url;
+					if(!streamer.is_live && this.config.show_streamer_image){img.className='mmm-twitchalert-grayscale'}
+					imgDiv.appendChild(img);
+				}
 
 				// Add live badge
 				if(streamer.is_live && this.config.show_live_badge){
